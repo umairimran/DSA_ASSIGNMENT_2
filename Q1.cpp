@@ -1,132 +1,103 @@
 #include <iostream>
 using namespace std;
+template<typename T>
 class node {
 public:
-	int data;
-	node* next;
-	node* subLinkedList;
-	node(int d)
-	{
-		data = d;
+	T data;
+	node<T> *next;
+	node( T  d)
+	{data = d;
 		next = nullptr;
-		subLinkedList = nullptr;
-
 	}
+
 };
+template<typename T>
+
 class linkedList {
 public:
-	node* head;
+	node<T>* head;
 	linkedList()
 	{
 		head = nullptr;
 	}
-	void insertInList(int d)
+	void insertAtEnd(T  d)
 	{
-		node* current = head;
-		node* newNode = new node(d);
+		node<T>* current;
+		node<T>* newnode = new node<T>(d);
+		
 		if (head == nullptr)
 		{
-			head = newNode;
+			head = newnode;
 		}
 		else {
-			while (current->next != NULL)
-			{
-				current = current->next;
-			}
-			current->next = newNode;
-		}
-	}
-	void print()
-	{
-		node* current = head;
-		while (current != NULL)
-		{
-			cout << current->data << " ";
-			current = current->next;
-		}
-	}
-	void createSubList(int k)
-	{
-		linkedList l2;
-		int count = 1;
-		node* current = head;
-		while (current->next != nullptr)
-		{
-
-			count++;
-			current = current->next;
-		}
-		if (count % k == 0)
-		{
 			current = head;
-			count = 1;
-			l2.insertInList(0);
-			l2.head->subLinkedList = current;
-
 			while (current->next != nullptr)
 			{
-				if (count == k)
-				{
-					l2.insertInList(0);
-					node* current2 = l2.head;
-					while (current2->next != nullptr)
-					{
-						current2 = current2->next;
-					}
-					node* temp = current->next;
-					current2->subLinkedList = temp;
-					current->next = nullptr;
-					current = temp;
-
-
-					count = 1;
-					continue;
-				}
-				count++;
-				current = current->next;
-
-			}
-
-			node* current = l2.head;
-			while (current != nullptr)
-			{
-				node* subListPrint = current->subLinkedList;
-				cout << "[ ";
-				while (subListPrint != nullptr)
-				{
-					cout << subListPrint->data << ",";
-					subListPrint = subListPrint->next;
-
-				}
-				cout << "]->";
 				current = current->next;
 			}
-
+			current->next = newnode;
 		}
-		if (count % k != 0)
-		{
-			int sublistsToMake = count / k;
-
-
-		}
-		if (count < k)
-		{
-
-
-		}
-
-
 	}
 
+	void display() {
+		node<T>* current = head;
+		while (current) {
+			std::cout << current->data << " ";
+			current = current->next;
+		}
+	
+	}
+	void makeSublists(int k)
+	{
+		if (k <= 0)
+		{
+			cout << "Invalide value of k.";
+			return;
+		}
+		linkedList<int> sublist;
+		linkedList<linkedList<int>> l3;
+		node<T>* current = head;
+		while (current != nullptr)
+		{
+			for (int i = 0; i < k && current!=nullptr; i++)
+			{
+				sublist.insertAtEnd(current->data);
+				current = current->next;
+			}
+			l3.insertAtEnd(sublist);
+			sublist.head = nullptr;
+		}
+
+		if (current != nullptr)
+		{
+			while (current != nullptr)
+			{
+				sublist.insertAtEnd(current->data);
+				current = current->next;
+			}
+			
+			l3.insertAtEnd(sublist);
+		}
+		node<linkedList<int>>* c = l3.head;
+	//	current = l3.head;
+		while (c != nullptr)
+		{
+			cout << "[";
+			c->data.display();
+			cout << "]->";
+			
+			c = c->next;
+		}
+	}
 
 };
 int main()
 {
-	linkedList l1;
-	for (int i = 1; i < 16; i++)
+	linkedList<int> l1;
+	int n = 25;
+	for (int i = 0; i < n; i++)
 	{
-		l1.insertInList(i);
+		l1.insertAtEnd(i + 1);
 	}
-
-	l1.createSubList(3);
+	l1.makeSublists(5);
 }
